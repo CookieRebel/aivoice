@@ -1,0 +1,13 @@
+.conversation {
+  overflow-y: scroll;
+}
+
+.preline {
+  white-space: pre-line;
+  font-size: 24px;
+}
+
+.btn-green {
+  background: #18bc6d;
+  color: white;
+}
