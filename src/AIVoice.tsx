@@ -22,9 +22,9 @@ const AIVoice: FC = () => {
   // To speak, press the microphone button. Once you are finished, press the microphone button again.
   //
   // Note: Add RelevanceAI API key.
-  const RELEVANCEAI_API_KEY = "YOUR_API_KEY_HERE";
+  const RELEVANCEAI_API_KEY = "API_KEY_HERE";
   // Add ElevenLabs API key here, you can get one for free on their website.
-  const ELEVENLABS_API_KEY = "YOUR_API_KEY_HERE";
+  const ELEVENLABS_API_KEY = "API_KEY_HERE";
 
   const [userInput, setUserInput] = useState("");
   const [fullConversation, setFullConversation] = useState("");
@@ -36,7 +36,7 @@ const AIVoice: FC = () => {
     startAgentConversation,
     agentResponse,
     isAgentConnected,
-  } = useRelevanceAI();
+  } = useRelevanceAI(RELEVANCEAI_API_KEY);
 
   const setTransscript = () => {
     setUserInput(transcript);

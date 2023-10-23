@@ -4,11 +4,6 @@ import React, { useEffect, useState } from "react";
 
 const log = debug("app:component:layouts.AudioStream");
 
-interface VoiceSettings {
-  stability: number;
-  similarity_boost: number;
-}
-
 interface AudioStreamProps {
   apiKey: string;
   text: string;
@@ -21,14 +16,12 @@ const AudioStream: React.FC<AudioStreamProps> = ({ text, apiKey }) => {
     stability: 0,
     similarity_boost: 0,
   };
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   // Split sentences on period,exclamation point, and question mark
   // We send each sentence separately to ElevenLabs API, because of the lag: the longer the text is, the more lag you have before the audio plays
   const sentences = text.split(/(?<=[.!?,:])\s*/);
 
   const startStreaming = async (sentence: string) => {
-    setLoading(true);
     setError("");
 
     const baseUrl = "https://api.elevenlabs.io/v1/text-to-speech";
@@ -68,8 +61,6 @@ const AudioStream: React.FC<AudioStreamProps> = ({ text, apiKey }) => {
     } catch (error) {
       setError("Error: Unable to stream audio.");
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 

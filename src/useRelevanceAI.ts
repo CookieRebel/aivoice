@@ -3,17 +3,16 @@ import { useEffect, useState } from "react";
 
 const log = debug("app:component:components.content.useRelevanceAI");
 
-const useRelevanceAI: () => {
+const useRelevanceAI: (apiKey: string) => {
   startAgentConversation: () => void;
   sendToAgent: (userInput: string) => void;
   pollAgentResponse: () => void;
   agentResponse: string;
   isAgentConnected: boolean;
-} = () => {
+} = (apiKey) => {
   const [jobId, setJobId] = useState("");
   const [studioId, setStudioId] = useState("");
   const [conversation_id, setConversationId] = useState("");
-  const [isPolling, setIsPolling] = useState(false);
   const [agentResponse, setAgentResponse] = useState("");
   const startAgentConversation: () => Promise<void> = async () => {
     log("startAgentConversation");
@@ -33,7 +32,7 @@ const useRelevanceAI: () => {
       method: "POST",
       headers: {
         "Content-type": "application/json;charset=UTF-8",
-        Authorization: RELEVANCEAI_API_KEY,
+        Authorization: apiKey,
       },
       body: body ? JSON.stringify(body) : null,
     });
@@ -75,8 +74,7 @@ const useRelevanceAI: () => {
       method: "POST",
       headers: {
         "Content-type": "application/json;charset=UTF-8",
-        Authorization:
-          "7bb4ed7a0abf-47e0-8f95-da62dc186e3e:sk-MjE0NDk5YzQtZTNlYi00M2M4LWJlNjUtNTFiM2Q0ODEyOTE2",
+        Authorization: apiKey,
       },
       body: body ? JSON.stringify(body) : null,
     });
@@ -94,8 +92,6 @@ const useRelevanceAI: () => {
   const pollAgentResponse: () => Promise<void> = async () => {
     log("pollAgentResponse");
     const pollingUrl = `https://api-f1db6c.stack.tryrelevance.com/latest/studios/${studioId}/async_poll/${jobId}`;
-    // log("pollingUrl", pollingUrl);
-    setIsPolling(true);
     // eslint-disable-next-line no-constant-condition
     while (true) {
       log(".");
@@ -103,8 +99,7 @@ const useRelevanceAI: () => {
         method: "GET",
         headers: {
           "Content-type": "application/json;charset=UTF-8",
-          Authorization:
-            "7bb4ed7a0abf-47e0-8f95-da62dc186e3e:sk-MjE0NDk5YzQtZTNlYi00M2M4LWJlNjUtNTFiM2Q0ODEyOTE2",
+          Authorization: apiKey,
         },
       });
       if (response.ok) {
@@ -126,7 +121,6 @@ const useRelevanceAI: () => {
           // Break answer into sentences
           const answer = stepSuccess.state.output.answer;
           setAgentResponse(answer);
-          setIsPolling(false);
           break;
         }
       }
@@ -138,7 +132,7 @@ const useRelevanceAI: () => {
     if (jobId && studioId) {
       pollAgentResponse();
     }
-  }, [jobId, studioId]);
+  }, [jobId, studioId, pollAgentResponse]);
 
   const isAgentConnected =
     conversation_id !== "" && jobId !== "" && studioId !== "";
